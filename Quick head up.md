@@ -293,6 +293,8 @@ CopyEdit
 
 In this case it is possible without cross join.
 
+-----------------------------------------------------------------------------------------------------------------------------
+
 For joining table to itself IN query can be used(one of the way)
 SELECT name
 FROM Employee
