@@ -1,4 +1,4 @@
-## Problem 1: Not Equals Query in MySQL and MS SQL
+## Problem : Not Equals Query in MySQL and MS SQL
 
 ### MySQL
 ```sql
@@ -18,7 +18,7 @@ WHERE referee_id != 2 OR referee_id IS NULL;
 
 ---
 
-## Problem 2: Identifying Invalid Tweets
+## Problem : Identifying Invalid Tweets
 
 ### **Description**
 A tweet is considered invalid if the number of characters in its content exceeds 15.
@@ -39,7 +39,7 @@ WHERE LEN(content) > 15;
 
 ---
 
-## Problem 3: Higher Temperatures than Previous Day
+## Problem : Higher Temperatures than Previous Day
 
 ### **Description**
 Find the IDs of all records where the temperature of a given day is higher than the temperature of the previous day.
