@@ -142,62 +142,97 @@ After Join (Intermediate Table):
 | 2          | 1          | start         | 2.500     | 2          | 1          | end           | 5.000     |
 +------------+------------+---------------+-----------+------------+------------+---------------+-----------+
 
-+---------------+---------+
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+## Student Exam Analysis
+
+This project demonstrates how to analyze the attendance of students in various subject examinations using SQL queries. The solution handles multiple tables: `Students`, `Subjects`, and `Examinations` to calculate the number of times each student attended each subject exam, including cases where a student did not attend any exams.
+
+### Table: Students
 | Column Name   | Type    |
-+---------------+---------+
+|---------------|---------|
 | student_id    | int     |
 | student_name  | varchar |
-+---------------+---------+
-student_id is the primary key (column with unique values) for this table.
-Each row of this table contains the ID and the name of one student in the school.
- 
-Table: Subjects
-+--------------+---------+
+
+- `student_id` is the primary key for this table.
+- Contains information about the IDs and names of students.
+
+### Table: Subjects
 | Column Name  | Type    |
-+--------------+---------+
+|--------------|---------|
 | subject_name | varchar |
-+--------------+---------+
-subject_name is the primary key (column with unique values) for this table.
-Each row of this table contains the name of one subject in the school.
- 
-Table: Examinations
-+--------------+---------+
-| Column Name  | Type    |
-+--------------+---------+
-| student_id   | int     |
-| subject_name | varchar |
-+--------------+---------+
-There is no primary key (column with unique values) for this table. It may contain duplicates.
-Each student from the Students table takes every course from the Subjects table.
-Each row of this table indicates that a student with ID student_id attended the exam of subject_name.
- 
-Write a solution to find the number of times each student attended each exam.
-Return the result table ordered by student_id and subject_name.
-The result format is in the following example.
- 
-Example 1:
-Input: 
-Students table:
-+------------+--------------+
+
+- `subject_name` is the primary key for this table.
+- Contains the list of subjects offered by the school.
+
+### Table: Examinations
+| Column Name   | Type    |
+|---------------|---------|
+| student_id    | int     |
+| subject_name  | varchar |
+
+- This table does not have a primary key and may contain duplicate rows.
+- Contains information about which students attended exams for which subjects.
+
+## SQL Solution
+
+The query below calculates the number of times each student attended each subject exam:
+
+```sql
+SELECT 
+    s.student_id,
+    s.student_name,
+    sub.subject_name,
+    COUNT(e.subject_name) AS attended_exams
+FROM Students s
+CROSS JOIN Subjects sub
+LEFT JOIN Examinations e 
+    ON s.student_id = e.student_id 
+    AND sub.subject_name = e.subject_name
+GROUP BY s.student_id, s.student_name, sub.subject_name
+ORDER BY s.student_id, sub.subject_name;
+```
+
+### Query Explanation
+
+1. **CROSS JOIN**:
+   - Creates a combination of all students and all subjects, ensuring every student-subject pair is considered, even if no examination record exists.
+
+2. **LEFT JOIN**:
+   - Joins the result of the `CROSS JOIN` with the `Examinations` table to include data about exams attended by students for specific subjects.
+   - If a student did not attend an exam for a subject, the values from `Examinations` will be `NULL`.
+
+3. **COUNT()**:
+   - Counts the number of occurrences of each subject for each student in the `Examinations` table.
+   - Returns `0` if no record exists for the student-subject pair.
+
+4. **GROUP BY**:
+   - Groups the results by `student_id`, `student_name`, and `subject_name` to calculate the count for each combination.
+
+5. **ORDER BY**:
+   - Sorts the results by `student_id` and `subject_name` for better readability.
+
+## Example Input and Output
+
+### Input
+#### Students Table
 | student_id | student_name |
-+------------+--------------+
+|------------|--------------|
 | 1          | Alice        |
 | 2          | Bob          |
 | 13         | John         |
 | 6          | Alex         |
-+------------+--------------+
-Subjects table:
-+--------------+
+
+#### Subjects Table
 | subject_name |
-+--------------+
+|--------------|
 | Math         |
 | Physics      |
 | Programming  |
-+--------------+
-Examinations table:
-+------------+--------------+
+
+#### Examinations Table
 | student_id | subject_name |
-+------------+--------------+
+|------------|--------------|
 | 1          | Math         |
 | 1          | Physics      |
 | 1          | Programming  |
@@ -209,11 +244,10 @@ Examinations table:
 | 13         | Physics      |
 | 2          | Math         |
 | 1          | Math         |
-+------------+--------------+
-Output: 
-+------------+--------------+--------------+----------------+
+
+### Output
 | student_id | student_name | subject_name | attended_exams |
-+------------+--------------+--------------+----------------+
+|------------|--------------|--------------|----------------|
 | 1          | Alice        | Math         | 3              |
 | 1          | Alice        | Physics      | 2              |
 | 1          | Alice        | Programming  | 1              |
@@ -226,70 +260,19 @@ Output:
 | 13         | John         | Math         | 1              |
 | 13         | John         | Physics      | 1              |
 | 13         | John         | Programming  | 1              |
-+------------+--------------+--------------+----------------+
-Explanation: 
-The result table should contain all students and all subjects.
-Alice attended the Math exam 3 times, the Physics exam 2 times, and the Programming exam 1 time.
-Bob attended the Math exam 1 time, the Programming exam 1 time, and did not attend the Physics exam.
-Alex did not attend any exams.
-John attended the Math exam 1 time, the Physics exam 1 time, and the Programming exam 1 time.
 
-SELECT 
-    s.student_id,
-    s.student_name,
-    sub.subject_name,
-    COUNT(e.subject_name) AS attended_exams
-FROM Students s
-CROSS JOIN Subjects sub
-LEFT JOIN Examinations e ON s.student_id = e.student_id AND sub.subject_name = e.subject_name
-GROUP BY s.student_id, s.student_name, sub.subject_name
-ORDER BY s.student_id, sub.subject_name;
+## How to Use
 
---SQL standard requires all columns in the SELECT clause (that are not part of an aggregate function like COUNT) to also be included in the GROUP BY clause. Here for student_name
+1. Create the `Students`, `Subjects`, and `Examinations` tables in your database.
+2. Populate the tables with data.
+3. Run the provided SQL query to analyze exam attendance.
+4. Review the output to understand attendance patterns for each student and subject.
 
+## Key Notes
+- This solution ensures that all student-subject combinations are included in the output, even if no exams were attended.
+- The query is written in standard SQL and should work with most relational database systems.
 
-Step 1: After CROSS JOIN
-The CROSS JOIN will generate every combination of student_id and subject_name from the Students and Subjects tables.
-plaintext
-CopyEdit
-+------------+--------------+--------------+
-| student_id | student_name | subject_name |
-+------------+--------------+--------------+
-| 1          | Alice        | Math         |
-| 1          | Alice        | Physics      |
-| 1          | Alice        | Programming  |
-| 2          | Bob          | Math         |
-| 2          | Bob          | Physics      |
-| 2          | Bob          | Programming  |
-| 6          | Alex         | Math         |
-| 6          | Alex         | Physics      |
-| 6          | Alex         | Programming  |
-| 13         | John         | Math         |
-| 13         | John         | Physics      |
-| 13         | John         | Programming  |
-+------------+--------------+--------------+
-Step 2: After LEFT JOIN with Examinations
-The LEFT JOIN adds data from the Examinations table based on matching student_id and subject_name. If no record exists for a student and subject combination, the Examinations columns will be NULL.
-plaintext
-CopyEdit
-+------------+--------------+--------------+------------+------------+--------------+
-| student_id | student_name | subject_name | student_id | subject_name | student_id   |
-+------------+--------------+--------------+------------+------------+--------------+
-| 1          | Alice        | Math         | 1          | Math         | 1            |
-| 1          | Alice        | Math         | 1          | Math         | 1            |
-| 1          | Alice        | Math         | 1          | Math         | 1            |
-| 1          | Alice        | Physics      | 1          | Physics      | 1            |
-| 1          | Alice        | Physics      | 1          | Physics      | 1            |
-| 1          | Alice        | Programming  | 1          | Programming  | 1            |
-| 2          | Bob          | Programming  | 2          | Programming  | 2            |
-| 2          | Bob          | Math         | 2          | Math         | 2            |
-| 13         | John         | Math         | 13         | Math         | 13           |
-| 13         | John         | Physics      | 13         | Physics      | 13           |
-| 13         | John         | Programming  | 13         | Programming  | 13           |
-| 6          | Alex         | Math         | NULL       | NULL         | NULL          |
-| 6          | Alex         | Physics      | NULL       | NULL         | NULL          |
-| 6          | Alex         | Programming  | NULL       | NULL         | NULL          |
-+------------+--------------+--------------+------------+------------+--------------+
+Enjoy analyzing your exam data!
 
 In this case it is possible without cross join.
 
