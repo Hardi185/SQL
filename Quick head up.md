@@ -261,20 +261,54 @@ ORDER BY s.student_id, sub.subject_name;
 | 13         | John         | Physics      | 1              |
 | 13         | John         | Programming  | 1              |
 
-## How to Use
+## Steps
 
-1. Create the `Students`, `Subjects`, and `Examinations` tables in your database.
-2. Populate the tables with data.
-3. Run the provided SQL query to analyze exam attendance.
-4. Review the output to understand attendance patterns for each student and subject.
+### **Step 1: CROSS JOIN**
+The `CROSS JOIN` generates every possible combination of:
+- `student_id` and `student_name` from the **Students** table.
+- `subject_name` from the **Subjects** table.
 
-## Key Notes
-- This solution ensures that all student-subject combinations are included in the output, even if no exams were attended.
-- The query is written in standard SQL and should work with most relational database systems.
+This ensures that every student is paired with every subject.
 
-Enjoy analyzing your exam data!
+#### **Generated Output**
+| student_id | student_name | subject_name   |
+|------------|--------------|----------------|
+| 1          | Alice        | Math           |
+| 1          | Alice        | Physics        |
+| 1          | Alice        | Programming    |
+| 2          | Bob          | Math           |
+| 2          | Bob          | Physics        |
+| 2          | Bob          | Programming    |
+| 6          | Alex         | Math           |
+| 6          | Alex         | Physics        |
+| 6          | Alex         | Programming    |
+| 13         | John         | Math           |
+| 13         | John         | Physics        |
+| 13         | John         | Programming    |
 
-In this case it is possible without cross join.
+### **Step 2: LEFT JOIN with Examinations**
+The `LEFT JOIN` is used to include data from the **Examinations** table:
+- Combines the dataset from Step 1 with **Examinations** records based on `student_id` and `subject_name`.
+- If no examination record exists for a specific combination, the examination data will be `NULL`.
+
+#### **Generated Output**
+| student_id | student_name | subject_name   | exam_student_id | exam_subject_name | exam_score |
+|------------|--------------|----------------|-----------------|-------------------|------------|
+| 1          | Alice        | Math           | 1               | Math              | 95         |
+| 1          | Alice        | Physics        | 1               | Physics           | 85         |
+| 1          | Alice        | Programming    | 1               | Programming       | 90         |
+| 2          | Bob          | Math           | 2               | Math              | 75         |
+| 2          | Bob          | Programming    | 2               | Programming       | 80         |
+| 6          | Alex         | Math           | NULL            | NULL              | NULL       |
+| 6          | Alex         | Physics        | NULL            | NULL              | NULL       |
+| 6          | Alex         | Programming    | NULL            | NULL              | NULL       |
+| 13         | John         | Math           | 13              | Math              | 88         |
+| 13         | John         | Physics        | 13              | Physics           | 92         |
+| 13         | John         | Programming    | 13              | Programming       | 89         |
+
+## Can It Be Done Without `CROSS JOIN`?
+Yes, it's possible to achieve the same output without a `CROSS JOIN` by using a different query structure, such as generating combinations dynamically within the join logic. However, a `CROSS JOIN` provides a straightforward way to produce exhaustive combinations of `Students` and `Subjects`.
+
 
 -----------------------------------------------------------------------------------------------------------------------------
 
