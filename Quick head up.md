@@ -1,8 +1,20 @@
-Not euqals query in mysql and ms sql
+# Not Equals Query in MySQL and MS SQL
+
+### MySQL
+```sql
 SELECT name 
 FROM Customer
 WHERE referee_id <> 2 OR referee_id IS NULL;
-!= can also be used for ms sql
+```
+
+### MS SQL
+In MS SQL, the `!=` operator can also be used in place of `<>`:
+
+```sql
+SELECT name 
+FROM Customer
+WHERE referee_id != 2 OR referee_id IS NULL;
+```
 ------------------------------------------------------------------------------------------------------------------------------------------
 Write a solution to find the IDs of the invalid tweets. The tweet is invalid if the number of characters used in the content of the tweet is strictly greater than 15.
 
