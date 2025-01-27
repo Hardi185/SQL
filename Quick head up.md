@@ -1,4 +1,4 @@
-# Not Equals Query in MySQL and MS SQL
+## Problem 1: Not Equals Query in MySQL and MS SQL
 
 ### MySQL
 ```sql
@@ -15,33 +15,55 @@ SELECT name
 FROM Customer
 WHERE referee_id != 2 OR referee_id IS NULL;
 ```
-------------------------------------------------------------------------------------------------------------------------------------------
-Write a solution to find the IDs of the invalid tweets. The tweet is invalid if the number of characters used in the content of the tweet is strictly greater than 15.
 
-My sql
-# Write your MySQL query statement below
-select tweet_id
-from Tweets
-where CHAR_LENGTH(content) > 15
-ms sql
-select tweet_id
-from Tweets
-where len(content) > 15
----------------------------------------------------------------------------------------------------------------
-Write a solution to find all dates' id with higher temperatures compared to its previous dates (yesterday).
-Ms sql
-select w1.id
-from Weather w1
-join Weather w2
-on w1.recordDate = dateadd(day, 1, W2.recordDate)
-where w1.temperature > w2.temperature
+---
 
-my sql
+## Problem 2: Identifying Invalid Tweets
+
+### **Description**
+A tweet is considered invalid if the number of characters in its content exceeds 15.
+
+### **MySQL Solution**
+```sql
+SELECT tweet_id
+FROM Tweets
+WHERE CHAR_LENGTH(content) > 15;
+```
+
+### **MS SQL Solution**
+```sql
+SELECT tweet_id
+FROM Tweets
+WHERE LEN(content) > 15;
+```
+
+---
+
+## Problem 3: Higher Temperatures than Previous Day
+
+### **Description**
+Find the IDs of all records where the temperature of a given day is higher than the temperature of the previous day.
+
+### **MySQL Solution**
+```sql
 SELECT w1.id
 FROM Weather w1
 JOIN Weather w2
 ON w1.recordDate = DATE_ADD(w2.recordDate, INTERVAL 1 DAY)
 WHERE w1.temperature > w2.temperature;
+```
+
+### **MS SQL Solution**
+```sql
+SELECT w1.id
+FROM Weather w1
+JOIN Weather w2
+ON w1.recordDate = DATEADD(DAY, 1, w2.recordDate)
+WHERE w1.temperature > w2.temperature;
+```
+
+---
+
 +----------------+---------+
 | Column Name    | Type    |
 +----------------+---------+
